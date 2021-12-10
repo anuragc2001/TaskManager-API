@@ -18,9 +18,27 @@ router.post('/tasks', auth, async (req, res) => {
 })
 
 router.get('/tasks', auth, async (req, res) => {
+    const query = {
+        limit: 0,
+        skip: 0
+    }
+    const match = {
+        ...query,
+        limit: parseInt(req.query.limit),
+        skip: parseInt(req.query.skip),
+    }
+
+    console.log(match)
+
     try {
-        const tasks = req.user ? await Task.find({ owner: req.user._id }) : []
-        res.send(tasks)
+
+        if (req.query.completed) {
+            const tasks = req.user ? await Task.find({ owner: req.user._id, completed: req.query.completed === 'true' }).limit(parseInt(match.limit)).skip(parseInt(match.skip)) : []
+            res.send(tasks)
+        } else {
+            const tasks = req.user ? await Task.find({ owner: req.user._id }).limit(parseInt(match.limit)).skip(parseInt(match.skip)) : []
+            res.send(tasks)
+        }
     } catch (e) {
         res.status(500).send()
     }
