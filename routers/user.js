@@ -2,6 +2,7 @@ const express = require('express')
 const User = require('../models/user')
 const auth = require('../middleware/auth')
 const router = new express.Router()
+const Task = require('../models/task')
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body)
@@ -70,9 +71,11 @@ router.put('/users/me', auth, async (req, res) => {
     }
 })
 
-router.delete('/users/me', auth, async (req, res) => {
+router.delete('/users/me', auth, (req, res) => {
     try {
+        const tasks = await Task.find({ owner: req.user._id })
         await req.user.remove()
+
         res.send(req.user)
     } catch (e) {
         res.status(500).send()
