@@ -14,7 +14,7 @@ router.post('/users', async (req, res) => {
         const token = await user.generateAuthToken()
         res.status(201).send({ user, token })
     } catch (e) {
-        res.status(400).send(e)
+        res.status(400).send("An error has occurred :(")
     }
 })
 
@@ -114,9 +114,9 @@ router.delete("/users/me/avatar", auth, async (req, res) => {
     }
 })
 
-router.get("/users/:id/avatar", async (req, res) => {
+router.get("/users/me/avatar", auth, async (req, res) => {
     try {
-        const user = await User.findById(req.params.id)
+        const user = await User.findById(req.user._id)
         if (!user || !user.avatar) {
             throw new Error()
         }
@@ -124,7 +124,7 @@ router.get("/users/:id/avatar", async (req, res) => {
         res.set("Content-Type", "image/png")
         res.send(user.avatar)
     } catch (error) {
-
+        res.status(404).send(error.message)
     }
 })
 
