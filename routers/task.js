@@ -27,26 +27,27 @@ router.get('/tasks', auth, async (req, res) => {
 
     const match = {
         ...query,
-        limit: parseInt(req.query.limit),
-        skip: parseInt(req.query.skip),
+        limit: req.query.limit === undefined ? 0 : parseInt(req.query.limit),
+        skip: req.query.skip === undefined ? 0 : parseInt(req.query.skip),
         sort: req.query.sortBy ? { [req.query.sortBy.split('_')[0]]: req.query.sortBy.split('_')[1] === 'desc' ? -1 : 1 } : {}
     }
 
     try {
 
         if (req.query.completed) {
-            const tasks = req.user ? await Task
+            const tasks = await Task
                 .find({ owner: req.user._id, completed: req.query.completed === 'true' })
-                .limit(parseInt(match.limit))
-                .skip(parseInt(match.skip))
-                .sort(match.sort) : []
+                .limit(match.limit)
+                .skip(match.skip)
+                .sort(match.sort)
             res.send(tasks)
         } else {
-            const tasks = req.user ? await Task
+            const tasks = await Task
                 .find({ owner: req.user._id })
-                .limit(parseInt(match.limit))
-                .skip(parseInt(match.skip))
-                .sort(match.sort) : []
+                .limit(match.limit)
+                .skip(match.skip)
+                .sort(match.sort)
+
             res.send(tasks)
         }
     } catch (e) {
