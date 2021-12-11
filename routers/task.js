@@ -35,7 +35,11 @@ router.get('/tasks', auth, async (req, res) => {
     try {
 
         if (req.query.completed) {
-            const tasks = req.user ? await Task.find({ owner: req.user._id, completed: req.query.completed === 'true' }).limit(parseInt(match.limit)).skip(parseInt(match.skip)).sort(sorted.type, sorted.value) : []
+            const tasks = req.user ? await Task
+                .find({ owner: req.user._id, completed: req.query.completed === 'true' })
+                .limit(parseInt(match.limit))
+                .skip(parseInt(match.skip))
+                .sort(match.sort) : []
             res.send(tasks)
         } else {
             const tasks = req.user ? await Task
@@ -50,7 +54,7 @@ router.get('/tasks', auth, async (req, res) => {
     }
 })
 
-router.get('/tasks/:id', async (req, res) => {
+router.get('/tasks/:id', auth, async (req, res) => {
 
     try {
         const task = await Task.findOne({ _id: req.params.id, owner: req.user._id })
@@ -65,7 +69,7 @@ router.get('/tasks/:id', async (req, res) => {
     }
 })
 
-router.put('/tasks/:id', async (req, res) => {
+router.put('/tasks/:id', auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['description', 'completed']
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))

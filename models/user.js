@@ -47,7 +47,10 @@ const userSchema = new mongoose.Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    avatar: {
+        type: Buffer
+    }
 }, {
     timestamps: true
 })
@@ -71,7 +74,7 @@ userSchema.methods.toJSON = function () {
 
 userSchema.methods.generateAuthToken = async function () {
     const user = this
-    const token = jwt.sign({ _id: user.email }, 'mysecret')
+    const token = jwt.sign({ _id: user.email }, 'mysecret', { expiresIn: '365d' })
 
     user.tokens = user.tokens.concat({ token })
     await user.save()
@@ -95,7 +98,6 @@ userSchema.statics.findByCredentials = async (email, password) => {
     return user
 }
 
-// Hash the plain text password before saving
 userSchema.pre('save', async function (next) {
     const user = this
 
