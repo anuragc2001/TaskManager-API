@@ -3,6 +3,7 @@ const User = require('../models/user')
 const auth = require('../middleware/auth')
 const Multer = require('multer')
 const Sharp = require('sharp')
+const mail = require('../emails/mailer')
 const router = new express.Router()
 
 
@@ -12,9 +13,11 @@ router.post('/users', async (req, res) => {
     try {
         await user.save()
         const token = await user.generateAuthToken()
+        mail.sendEmailOnWelcome(String(req.body.email), String(req.body.name))
+        // console.log(req.body.email)
         res.status(201).send({ user, token })
     } catch (e) {
-        res.status(400).send("An error has occurred :(")
+        res.status(400).send("An Error has occurred :(")
     }
 })
 
@@ -75,6 +78,7 @@ router.put('/users/me', auth, async (req, res) => {
 
 router.delete('/users/me', auth, async (req, res) => {
     try {
+        mail.sendEmailOnDelete(String(req.user.email), String(req.user.name))
         await req.user.remove()
         res.send(req.user)
     } catch (e) {

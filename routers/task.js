@@ -19,14 +19,7 @@ router.post('/tasks', auth, async (req, res) => {
 
 router.get('/tasks', auth, async (req, res) => {
 
-    const query = {
-        limit: 0,
-        skip: 0,
-        sort: {}
-    }
-
     const match = {
-        ...query,
         limit: req.query.limit === undefined ? 0 : parseInt(req.query.limit),
         skip: req.query.skip === undefined ? 0 : parseInt(req.query.skip),
         sort: req.query.sortBy ? { [req.query.sortBy.split('_')[0]]: req.query.sortBy.split('_')[1] === 'desc' ? -1 : 1 } : {}

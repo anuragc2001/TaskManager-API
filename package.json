@@ -5,7 +5,8 @@
   "main": "promise.js",
   "scripts": {
     "start": "node index.js",
-    "dev": ".\\node_modules\\.bin\\env-cmd -f .\\config\\dev.env .\\node_modules\\.bin\\nodemon .\\index.js "
+    "dev": ".\\node_modules\\.bin\\env-cmd -f .\\config\\dev.env .\\node_modules\\.bin\\nodemon .\\index.js",
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -16,11 +17,13 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.13",
     "multer": "^1.4.4",
+    "nodemailer": "^6.7.2",
     "sharp": "^0.29.3",
     "validator": "^13.7.0"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
+    "jest": "^27.4.4",
     "nodemon": "^2.0.15"
   }
 }
